@@ -17,12 +17,7 @@ import pandas as pd
 import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import train_test_split
-
-def clean_dataset(df):
-    assert isinstance(df, pd.DataFrame), "df needs to be a pd.DataFrame"
-    df.dropna(inplace=True)
-    indices_to_keep = ~df.isin([np.nan, np.inf, -np.inf]).any(1)
-    return df[indices_to_keep].astype(np.float64)
+from support_func import clean_dataset
 
 x = pd.read_csv('training_inputs.csv', delimiter=',')
 y = pd.read_csv('training_outputs.csv', delimiter=',')
@@ -51,12 +46,11 @@ for i in Y:
     for j in i:
         Ys.append(j)
 
-x_trains = [X[0], X[1], X[2]]
-y_trains = [Y[0], Y[1], Y[2]]
+filename = 'model_train_1to2GHz.sav'
 
 # split data in a training and test set
-x_train, x_test, y_train, y_test = train_test_split(X, Ys, test_size=6, random_state=1, shuffle=True)
-clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(1200), random_state=1)
+x_train, x_test, y_train, y_test = train_test_split(X, Ys, test_size=5, random_state=1, shuffle=True)
+clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(1000), random_state=1, max_iter=10000)
 
 #train the neural network
 clf.fit(x_train, y_train)
@@ -64,19 +58,7 @@ clf.fit(x_train, y_train)
 #see how wel it performs on train, test, shapiro datasets
 print(clf.score(x_train, y_train))
 print(clf.score(x_test, y_test))
-print(clf.score(x_trains, y_trains))
 
-
-# save the model to disk
-filename = 'finalized_model.sav'
+# save the model to file
 pickle.dump(clf, open(filename, 'wb'))
-
-'''
-# some time later...
- 
-# load the model from disk
-loaded_model = pickle.load(open(filename, 'rb'))
-result = loaded_model.score(X_test, Y_test)
-print(result)'''
-
 
