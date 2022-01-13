@@ -20,7 +20,9 @@ def ShapiroFunc(x,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q):
 
 #load and plot IV curves files
 dir = "./Data_24_12_Run1_Full/"
-files = ["./Data_24_12_Run1_Full/Shapiro_freq1210.0_power_-14.0"]
+dir = "./New_Training_Shap/"
+files = ["./New_Training_Shap\Shapiro_freq2111.1111111111113_power_-13.0"]
+#files = ["./Data_24_12_Run1_Full/Shapiro_freq1640.0_power_-7.0"]
 
 """
 Exp                     Pred
@@ -64,9 +66,28 @@ for i in files:
         # load t, I, V
         I = df[labels[1]]
         V = df[labels[2]]
-        I = I[500:3000]
-        V = V[500:3000]
+        #I = I[500:3000]
+        #V = V[500:3000]
         V = 0.1*V
+
+        on1 = False
+        on2 = True
+        count = 0 
+        V_new = []
+        I_new = []
+        for g in range(0, len(I)):
+            if g+1 < len(I):
+                if I[g] < 100 and I[g] > -150 and on1 and on2:
+                    V_new.append(V[g])
+                    I_new.append(I[g]) 
+                    count+=1
+                if I[g+1] <= -150 and I[g] > -150:
+                    on1 = True
+                if I[g+1] <= 100 and I[g] > 100 and on1:
+                    on1 = False
+                    on2 = False
+        V = V_new
+        I = I_new
 
         param, cov = curve_fit(func, I, V)
         x1 = np.linspace(np.min(I),np.max(I),1000)
@@ -105,6 +126,7 @@ for i in files:
         else:
             count = 0
         
+        V_list = V_list[:]
         tot_sum = 0
         for m in V_list:
             if count != 0:
@@ -114,11 +136,11 @@ for i in files:
             count += 1
         step = tot_sum/count
         print(step*10**-6, freq*10**6/(2*2.4179671*10**14), freq)
-
+        print(V_list)
         #plt.plot(x1,y, linewidth=1, color='r')
         plt.plot(x1,y2, linewidth=1, color='b')
         plt.scatter(I, V, s=0.05)
-        plt.title("IV-curve at f = "+ str(freq) + " Hz, power = " + str(power) + " dB")
-        plt.xlabel("Current")
-        plt.ylabel("Voltage")
+        #plt.title("IV-curve at f = "+ str(freq) + " Hz, power = " + str(power) + " dB")
+        plt.xlabel("Current [\u03bcA]")
+        plt.ylabel("Voltage [\u03bcV]")
         plt.show()

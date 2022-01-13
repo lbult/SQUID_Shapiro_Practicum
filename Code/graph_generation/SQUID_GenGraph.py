@@ -88,11 +88,33 @@ class Render():
             I = df[labels[1]]
             V = df[labels[2]]
             V = V*0.1 # scale voltage data
+
+            on1 = False
+            on2 = True
+            count = 0 
+            V_new = []
+            I_new = []
+            for g in range(0, len(I)):
+                if g+1 < len(I):
+                    if I[g] < 100 and I[g] > -180 and on1 and on2:
+                        V_new.append(V[g])
+                        I_new.append(I[g]) 
+                        count+=1
+                    if I[g+1] <= -180 and I[g] > -180:
+                        on1 = True
+                    if I[g+1] <= 100 and I[g] > 100 and on1:
+                        on1 = False
+                        on2 = False
+            V = V_new
+            I = I_new
+
             fig.canvas.mpl_connect('key_press_event', self.press)
             ax.scatter(I, V, s=0.05)
-            plt.title("IV-curve") # at f = 1440 Hz, power = -3.2d B")
-            plt.xlabel("Current" + i)
-            plt.ylabel("Voltage")
+            #plt.title("IV-curve") # at f = 1440 Hz, power = -3.2d B")
+            #plt.xlabel("Current" + i)
+            print(i)
+            plt.xlabel("Current [\u03bcA]")
+            plt.ylabel("Voltage [\u03bcV]")
             plt.show()
         #B = Button(root,  text="Not Shapiro", command= lambda i=i: move_to_notshapiro(i)).grid(row=1,column=0)
         #C = Button(root,  text="Shapiro", command= lambda i=i: move_to_shapiro(i)).grid(row=1,column=1)
@@ -109,8 +131,8 @@ class Render():
         
         #root.mainloop()
 
-files = glob.glob("./Data_24_12_Run1/*")
-files = files[files.index("./Data_24_12_Run1\Shapiro_freq1660.0_power_-4.0"):]
+files = glob.glob("./New_Training_Shap/*")
+#files = files[files.index("./New_Training_Shap/Shapiro_freq1660.0_power_-4.0"):]
 #dir = random.sample(dir, 40)
 
 '''dir = glob.glob("./Data_24_12_Run1_Full/Shapiro_freq2360.0_power_*")
