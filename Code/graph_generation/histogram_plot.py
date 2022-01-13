@@ -1,4 +1,6 @@
+from cmath import nan
 import glob
+from pickle import FALSE
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -43,13 +45,34 @@ while f < 10:
         labels = df.columns
         # load I, V
         I = df[labels[1]]
+        I = I
         V = df[labels[2]]
-        V = V*0.1
+        V = V*0.1  
+        V_new = []
+        I_new = []
 
-        hist, biness = np.histogram(V, bins=300, density=True)
+        I = preprocessing.minmax_scale(I, feature_range=(-10, 200), axis=0, copy=True)
+        
+        on1 = False
+        on2 = True
+        count = 0 
+        for g in range(0, len(I)):
+            if I[g] < 160 and I[g] > 50 and on1 and on2:
+                V_new.append(V[g]) 
+                I_new.append(I[g])
+                count+=1
+            if I[g-1] <= 50 and I[g] > 50:
+                on1 = True
+            if I[g-1] <= 160 and I[g] > 160 and on1:
+                on1 = False
+                on2 = False
+
+        hist, biness = np.histogram(V_new, bins=300, density=True)
         hist = preprocessing.minmax_scale(hist, feature_range=(0, 255), axis=0, copy=True)
+        hist = hist[~np.isnan(hist)]
+        
         k=0
-        kt = 0
+        kt=0
         for j in hist:
             # np arrays
             img[kt][ct] = j
@@ -62,25 +85,16 @@ while f < 10:
         m+=1
         ct += 1
 
-
-    # cv2 imshow code
+    #offset = 10
+    #for i in range(0,len(hists)):
+    #    plt.plot(V, bins[i]+offset*i)
+    
     img = img.astype(np.uint8)
-    #calculate the 50 percent of original dimensions
-    width = int(img.shape[1] * 13.33)
-    height = int(img.shape[0] * 1.33)
-    # dsize
-    dsize = (width, height)
+    plt.imshow(img, aspect="auto", cmap=plt.cm.RdPu)
+    plt.colorbar()
+    plt.show()
 
-    # resize image
-    #img = img[:, 30:]
-    img = cv2.resize(img, dsize)
-    img = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
-    cv2.imshow('image',img)
-    cv2.imwrite("Imshow_1660MHz.jpg", img)
-    cv2.waitKey(0)
-
-    #plt plot
-    plt.scatter(power, bins, c=hists, s=4)
+    #plt.scatter(power, bins, c=hists, s=4)
     #plt.title(str(f*10))
     plt.xlabel("RF Transmitter Power [dB]")
     plt.ylabel("Normalised Voltage [-]")
