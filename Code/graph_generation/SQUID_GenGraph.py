@@ -8,16 +8,12 @@ from tkinter import Tk, Button, Frame
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import re
 import shutil
-from sklearn import preprocessing
-import random
 from matplotlib.tri import Triangulation
-import keyboard
-import sys
 
 #load and plot IV curves files
 #files = glob.glob("./alg_data/*.csv")
 #files = glob.glob("./Training_Shap/*")
-#files = glob.glob("./Data_24_12_Run1/Shapiro_freq2220.0_power_*")
+files = glob.glob("./Data_24_12_Run2_Full_copy\Shapiro_freq3010*")
 #files = glob.glob("./Data_24_12_Run1_Full\Shapiro_freq1550.0_power_0.0")
 
 def move_to_notshapiro(file):
@@ -26,9 +22,9 @@ def move_to_notshapiro(file):
     string = file.split("/")
     string = string[-1].split("\\")
     if len(string) == 2:
-        shutil.move("./"+string[0]+"/"+string[1], "./New_Training_Not_Shap/" + str(string[-1]))
+        shutil.move("./"+string[0]+"/"+string[1], "./Train_NotShap/" + str(string[-1]))
     else:
-        shutil.move(file, "./New_Training_Not_Shap/" + str(string[-1]))
+        shutil.move(file, "./Train_NotShap/" + str(string[-1]))
 
 def move_to_shapiro(file):
     plt.close()
@@ -36,9 +32,9 @@ def move_to_shapiro(file):
     string = file.split("/")
     string = string[-1].split("\\")
     if len(string) == 2:
-        shutil.move("./"+string[0]+"/"+string[1], "./New_Training_Shap/" + str(string[-1]))
+        shutil.move("./"+string[0]+"/"+string[1], "./Train_Shap/" + str(string[-1]))
     else:
-        shutil.move(file, "./New_Training_Shap/" + str(string[-1]))
+        shutil.move(file, "./Train_Shap/" + str(string[-1]))
 
 def remove(file):
     plt.close()
@@ -87,29 +83,33 @@ class Render():
             # load t, I, V
             I = df[labels[1]]
             V = df[labels[2]]
-            V = V*0.1 # scale voltage data
 
             on1 = False
             on2 = True
             count = 0 
             V_new = []
             I_new = []
+            bounds = [0,30]
             for g in range(0, len(I)):
                 if g+1 < len(I):
-                    if I[g] < 100 and I[g] > -180 and on1 and on2:
+                    if I[g] < bounds[1] and I[g] > bounds[0] and on1 and on2:
                         V_new.append(V[g])
                         I_new.append(I[g]) 
                         count+=1
-                    if I[g+1] <= -180 and I[g] > -180:
+                    if I[g+1] <= bounds[0] and I[g] > bounds[0]:
                         on1 = True
-                    if I[g+1] <= 100 and I[g] > 100 and on1:
+                    if I[g+1] <= bounds[1] and I[g] > bounds[1] and on1:
                         on1 = False
                         on2 = False
             V = V_new
             I = I_new
 
             fig.canvas.mpl_connect('key_press_event', self.press)
-            ax.scatter(I, V, s=0.05)
+            ax.scatter(I, V, s=0.05, color='red')
+            freqw = 1555
+
+            #for m in range(0,5):
+            #     plt.axhline(y=(10*(m-1)*freqw*10**12/(2*2.4179671*10**14)), color='black', linestyle='--', linewidth=0.7)
             #plt.title("IV-curve") # at f = 1440 Hz, power = -3.2d B")
             #plt.xlabel("Current" + i)
             print(i)
@@ -121,7 +121,7 @@ class Render():
         #D = Button(root, text="Remove", command= lambda i=i: remove(i)).grid(row=1,column=2)
         #E = Button(root, text="Nothing", command= lambda i=i: nothing(i)).grid(row=1,column=3) 
         #createButton(root, move_to_shapiro(i), "Shapiro", "y", 0)
-        #createButton(root, move_to_notshapiro(i), "Not Shapiro", "n", 1)
+        #chreateButton(root, move_to_notshapiro(i), "Not Shapiro", "n", 1)
         #createButton(root, remove(i), "Remove", "r", 2)
         #createButton(root, nothing(i), "Nothing", "h", 3)
         #root.bind("<y>", move_to_shapiro(i))
@@ -131,17 +131,19 @@ class Render():
         
         #root.mainloop()
 
-files = glob.glob("./New_Training_Shap/*")
-#files = files[files.index("./New_Training_Shap/Shapiro_freq1660.0_power_-4.0"):]
-#dir = random.sample(dir, 40)
+#files = glob.glob("./Data_24_12_Run2_Full/Shapiro*") 
+#files = glob.glob("./Train_Shap/*") 
+#files = random.sample(files, 100)
+#files = files[files.index("./Data_24_12_Run2\Shapiro_freq4170.0_power_-9.0"):]
+#dir = random.sample(dir, 4)
 
-'''dir = glob.glob("./Data_24_12_Run1_Full/Shapiro_freq2360.0_power_*")
-directory = "./Data_24_12_Run1_Full/"
+#dir = glob.glob("./Data_24_12_Run2_Full/Shapiro_freq.0_power_*")
+directory = "./Data_24_12_Run2_Full_copy/"
 
 indexx = len(directory)
 shapiro_list = []
 #print(dir)
-for i in dir:
+for i in files:
     j = i[indexx:]
     if j[0] == "S":
         shapiro_list.append(j)
@@ -157,7 +159,7 @@ file = np.array(shapiro_list)[idx]
 files= []
 for j in file:
     files.append(directory + j)
-files = files[::-1]'''
+#files = files[::-1]
 
 this = Render(files=files)
 this.Run()
