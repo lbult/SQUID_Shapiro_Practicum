@@ -14,10 +14,9 @@
 import pickle
 from matplotlib.pyplot import xlabel
 import pandas as pd
-import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import train_test_split
-from support_func import clean_dataset
+from DNN.Test.support_func import clean_dataset
 
 x = pd.read_csv('training_inputs.csv', delimiter=',')
 y = pd.read_csv('training_outputs.csv', delimiter=',')

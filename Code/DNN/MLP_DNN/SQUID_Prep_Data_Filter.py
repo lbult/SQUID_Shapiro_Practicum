@@ -1,13 +1,8 @@
 from os import defpath
-from typing_extensions import ParamSpec
 import pandas as pd
 import glob
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit, minimize
-from scipy.sparse import dok
-from scipy.sparse.base import SparseEfficiencyWarning
 from sklearn import preprocessing
+import numpy as np
 
 # linear function
 def func(x,a,b):
@@ -65,50 +60,3 @@ shapiro_input = pd.DataFrame(shapiro_input)
 shapiro_input = shapiro_input.T
 
 shapiro_input.to_csv('training_inputs_filter.csv', index = False, header= False)
-
-'''
-param, cov = curve_fit(func, I, V)
-x1 = np.linspace(np.min(I),np.max(I),1000)
-y = func(x1, *param)
-
-param2, cov2 = curve_fit(ShapiroFunc, I, V)
-x2 = np.linspace(np.min(I),np.max(I),1000)
-y2 = ShapiroFunc(x2, *param2)
-
-shapiro_input.append(param2)
-print(shapiro_input)
-
-V_new = []
-j=0
-for i in y2:
-    V_new.append(i-y[j])
-    j+=1
-
-V_list = []
-j=0
-for i in V_new:
-    if j>0 and j<len(V_new)-1:
-        if i >= V_new[j-1] and i >= V_new[j+1]:
-            indx = V_new.index(i)
-            V_list.append(y2[indx])
-        if i <= V_new[j-1] and i <= V_new[j+1]:
-            indx = V_new.index(i)
-            V_list.append(y2[indx])
-    j+= 1
-
-print(V_list)
-
-plt.plot(x1,y, linewidth=1, color='r')
-plt.plot(x1,y2, linewidth=1, color='b')
-plt.scatter(I, V, s=0.05)
-plt.title("IV-curve at f = 1440 Hz, power = -3.2d B")
-plt.xlabel("Current")
-plt.ylabel("Voltage")
-
-'''
-'''y = -7.5
-while y < 5:
-    if y <7.5:
-        plt.axhline(y=y, color='r', linestyle='--')
-        y += 2.5'''
-#plt.show()

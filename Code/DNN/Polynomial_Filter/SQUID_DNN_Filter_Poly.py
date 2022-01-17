@@ -1,12 +1,8 @@
 import pickle
-from matplotlib.pyplot import xlabel
 import pandas as pd
-import numpy as np
-from sklearn.neural_network import MLPClassifier
-from sklearn.model_selection import train_test_split
 import glob
 import os
-from support_func import clean_dataset
+from DNN.Test.support_func import clean_dataset
 
 not_shapiro_files = glob.glob("./Data_24_12_Run3/*")
 print(len(not_shapiro_files))

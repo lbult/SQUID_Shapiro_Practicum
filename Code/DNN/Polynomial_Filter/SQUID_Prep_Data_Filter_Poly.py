@@ -1,14 +1,8 @@
 from os import defpath
-from typing_extensions import ParamSpec
 import pandas as pd
 import glob
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit, minimize
-from scipy.sparse import dok
-from scipy.sparse.base import SparseEfficiencyWarning
+from scipy.optimize import curve_fit
 from sklearn import preprocessing
-import random
 
 def ShapiroFunc(x,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p):
     return a + b*x + c*x**2 + d*x**3 + e*x**4 + f*x**5 + g*x**6 + h*x**7 + i*x**8 # + j*x**9 + k*x**10 + l*x**11 + m*x**12 + n*x**13 + o*x**14 + p*x**15
