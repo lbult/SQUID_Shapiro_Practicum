@@ -2,7 +2,7 @@
 Code written for the course Research Project for the Minor (Modern Physics)
 Programmed by Lennart Bult and Bram Wagemakers
 
-Before running a script, make sure that the correct file directory is specified.
+Before running a script, make sure that the correct file directory is specified. If you want more data to make graphs, please contact us.
 
 
 ------------------------------ ------------------------------ ------------------------------
