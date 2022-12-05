@@ -1,9 +1,17 @@
 # SQUID_Shapiro_Practicum
-Code written for the course Research Project for the Minor (Modern Physics)
+Code written for the course Research Project for the Minor Modern Physics
 Programmed by Lennart Bult and Bram Wagemakers
 
-Before running a script, make sure that the correct file directory is specified. If you want more data to make graphs, please contact us.
+## Some Cool Figures
 
+<img src="./Photos/3400MHz/Shapiro_3400MHz_-23dBm.png" width="700">
+
+<img src="./Plots/Hist_Shap_Freq_1660MHz.png" width="350"> <img src="./Plots/Histogram_Freq_Power.png" width="350">
+
+
+## (Brief) User Guide
+
+Before running a script, make sure that the correct file directory is specified. If you want more data to make graphs, please contact us.
 
 ------------------------------ ------------------------------ ------------------------------
 All code written for this project can be found in the Code folder. It is divided into three different folders.
